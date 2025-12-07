@@ -1,0 +1,36 @@
+## 1. List all products
+GET http://localhost:3000/products
+
+Accept: application/json
+###
+###
+### 2. Add item to cart 
+POST http://localhost:3000/cart
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+###
+###
+### 3. View updated cart
+GET http://localhost:3000/cart
+
+Accept: application/json
+###
+###
+### 4. Checkout (creates order & clears cart)
+POST http://localhost:3000/checkout
+Content-Type: application/json
+### 
+{
+  "shipping_address_id": 1,
+  "payment_method_id": 1
+}
+###
+###
+### 5. Confirm cart clears 
+GET http://localhost:3000/cart
+
+Accept: application/json

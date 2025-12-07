@@ -1,0 +1,115 @@
+###1 - GET http://localhost:3000/products
+
+Accept: application/json
+
+RESPONSE:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 177
+ETag: W/"b1-axb4Ecqmx8bpE4Dolen900o8og0"
+Date: Sun, 23 Nov 2025 19:36:21 GMT
+Connection: close
+
+[
+  {
+    "product_id": 1,
+    "name": "Wireless Headphones",
+    "description": "Noise-cancelling",
+    "price": "99.99"
+  },
+  {
+    "product_id": 2,
+    "name": "T-Shirt",
+    "description": "Cotton, Medium",
+    "price": "19.99"
+  }
+]
+
+
+###2 - POST http://localhost:3000/cart
+
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+RESPONSE:
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 27
+ETag: W/"1b-TJwOU+vjK3qJFSNCd2YreHR6oao"
+Date: Sun, 23 Nov 2025 19:37:42 GMT
+Connection: close
+
+{
+  "message": "Added to cart"
+}
+
+
+###3 - GET http://localhost:3000/cart
+
+Accept: application/json
+
+RESPONSE:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 130
+ETag: W/"82-gcYzaazXhqMHclyYW4/F63DBqE8"
+Date: Sun, 23 Nov 2025 19:38:10 GMT
+Connection: close
+
+{
+  "items": [
+    {
+      "product_id": 1,
+      "name": "Wireless Headphones",
+      "quantity": 6,
+      "unit_price": 99.99,
+      "line_total": 599.94
+    }
+  ],
+  "total_price": 599.94
+}
+
+
+### 4 - POST http://localhost:3000/checkout
+
+Content-Type: application/json
+
+RESPONSE:
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 36
+ETag: W/"24-WvjM6l1icPZZ2Y7DCco/m9wsFxs"
+Date: Sun, 23 Nov 2025 20:22:45 GMT
+Connection: close
+
+{
+  "order_id": 11,
+  "total_price": 199.98
+}
+
+
+### 5 - GET http://localhost:3000/cart
+
+Accept: application/json
+
+RESPONSE:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 28
+ETag: W/"1c-XZY+o/BKls1EnJyq0ryLW+8Fa68"
+Date: Sun, 23 Nov 2025 20:24:49 GMT
+Connection: close
+
+{
+  "items": [],
+  "total_price": 0
+}

@@ -1,0 +1,230 @@
+openapi: 3.0.3
+info:
+  title: Swiftcart API
+  description: Backend API for Swiftcart e-commerce platform
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/v1
+    description: Development
+  - url: https://api.swiftcart.example.com/v1
+    description: Production
+
+paths:
+  /products:
+    get:
+      summary: List all products
+      operationId: getProductsList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+  /cart:
+    get:
+      summary: Get current user's cart
+      operationId: getUserCart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cart contents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+    post:
+      summary: Add item to cart
+      operationId: addToCart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+                - quantity
+              properties:
+                product_id:
+                  type: integer
+                quantity:
+                  type: integer
+                  minimum: 1
+      responses:
+        '201':
+          description: Item added
+
+  /cart/{product_id}:
+    patch:
+      summary: Update quantity
+      operationId: updateCartItem
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - quantity
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+      responses:
+        '200':
+          description: Updated
+
+    delete:
+      summary: Remove item from cart
+      operationId: removeFromCart
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Removed
+
+  /checkout:
+    post:
+      summary: Place order from cart
+      operationId: checkoutCart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders:
+    get:
+      summary: Get order history
+      operationId: getOrderHistory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderSummary'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+        category_name:
+          type: string
+
+    CartItem:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        name:
+          type: string
+        quantity:
+          type: integer
+        unit_price:
+          type: number
+        line_total:
+          type: number
+
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total_price:
+          type: number
+          format: decimal
+
+    CheckoutRequest:
+      type: object
+      properties:
+        shipping_address_id:
+          type: integer
+        billing_address_id:
+          type: integer
+          nullable: true
+        payment_method_id:
+          type: integer
+      required:
+        - shipping_address_id
+        - payment_method_id
+
+    OrderSummary:
+      type: ...
+      # (same as yours)
+
+    Order:
+      allOf:
+        - $ref: '#/components/schemas/OrderSummary'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  product_name:
+                    type: string
+                  quantity:
+                    type: integer
+                  unit_price:
+                    type: number
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
